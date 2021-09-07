@@ -1,12 +1,24 @@
-#include "Client.h"
+#include "RequestHelper.h"
 
-#define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 1248
+//#define SERVER_IP "127.0.0.1"
+//#define SERVER_PORT 1248
 
 
 int main()
 {
-	Client client(SERVER_IP, SERVER_PORT);
+	RequestHelper rHelper;
+
+	auto response = rHelper.Get("127.0.0.1", "", 1248);
+
+	Log(response);
+
+	std::cin.get();
+
+	return 0;
+}
+
+/*
+Client client(SERVER_IP, SERVER_PORT);
 	if (!client.initialized) return -1;
 
 	std::string message;
@@ -40,5 +52,4 @@ int main()
 			stop = true;
 	}
 
-	return 0;
-}
+*/
