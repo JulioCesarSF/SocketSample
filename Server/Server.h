@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Logger.h"
-#include "FileHelper.h"
 #include "RequestHandler.h"
 
 #define MESSAGE_BUFFER_SIZE 1024 * 5
@@ -193,13 +191,7 @@ public:
 		}
 
 		serverSocket = SetupSocket();
-
 		initialized = serverSocket != INVALID_SOCKET;
-
-		Log("Server initialized : " + std::to_string(initialized));
-		Log("> Ip:\t" + std::string(ip));
-		Log("> Port:\t" + std::to_string(port));
-
 		assert(initialized == true);
 	}
 
@@ -209,60 +201,12 @@ public:
 	}
 
 	/// <summary>
-	/// Start listener only for one client
-	/// </summary>
-	void StartSingleClientListener()
-	{
-		assert(initialized == true);
-		Log("Waiting for client...");
-		while (!shutdownServer && serverSocket != INVALID_SOCKET)
-		{
-			SOCKET newClient = GetSocketClient(serverSocket);
-			if (newClient == INVALID_SOCKET)
-				continue;
-
-			Log("!New client connected");
-			char cBuffer[MESSAGE_BUFFER_SIZE] = {};
-			int bRcv = 0;
-			do
-			{
-				//cleanup buffer
-				ZeroMemory(&cBuffer, MESSAGE_BUFFER_SIZE);
-
-				//https://docs.microsoft.com/pt-br/windows/win32/api/winsock2/nf-winsock2-recv
-				bRcv = recv(newClient, cBuffer, MESSAGE_BUFFER_SIZE, 0);
-
-				//process message with a command
-				if (bRcv > 0)
-				{
-					//reply received message to client as sample
-					SendToClient(newClient, cBuffer);
-				}
-
-				//remote shutdown server
-				if (_strcmpi(cBuffer, "/quit") == 0)
-				{
-					Log("Command /quit received from client.");
-					shutdownServer = true;
-					break;
-				}
-			} while (bRcv > 0);
-
-			closesocket(newClient);//close connection from client
-			closesocket(serverSocket); //close server listener
-			serverSocket = SetupSocket(); //restart
-		}
-		Log("Server stopped.");
-	}
-
-	/// <summary>
 	/// Multiple client server
 	/// </summary>
 	void StartMultiClientListener(IRequestHandler* requestHandler = nullptr)
 	{
 		assert(initialized == true);
 		assert(serverSocket != INVALID_SOCKET);
-		Log("Waiting for clients...");
 
 		// set of clients (this is an array)
 		fd_set master;
@@ -315,8 +259,6 @@ public:
 				}
 			}
 		}
-
-		Log("Server stopped.");
 	}
 
 	/// <summary>
