@@ -5,6 +5,7 @@ Socket HTTP server
 * To add endpoints you need to use RequestController add functions.
 * To start, include files: Server.h and RequestHandler.h
 * If you want json, include: json.hpp
+* Link to: Ws2_32.lib
 
 # Get
 ```c++
