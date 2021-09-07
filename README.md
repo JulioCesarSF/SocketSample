@@ -52,3 +52,13 @@ To add endpoints you need to use RequestController add functions.
 	Server server("127.0.0.1", 1248);
 	server.StartMultiClientListener(&requestController);
 ```
+
+# Custom RequestController
+You can create your own Controller, implement this class
+```c++
+class IRequestHandler
+{
+public:
+	virtual std::string HandleRequest(std::string payload) = 0;
+};
+```
