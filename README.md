@@ -2,9 +2,9 @@
 Socket HTTP server
 
 ## Sample server
-To add endpoints you need to use RequestController add functions.
-To start, include files: Server.h and RequestHandler.h
-If you want json, include: json.hpp
+* To add endpoints you need to use RequestController add functions.
+* To start, include files: Server.h and RequestHandler.h
+* If you want json, include: json.hpp
 
 # Get
 ```c++
