@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Server.h" />
+    <ClInclude Include="FileHelper.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestHandler.h">
+      <Filter>RequestHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Includes\nlohmann</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{f38e3c8f-3247-4d3f-b501-482ebd81f8d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RequestHandler">
+      <UniqueIdentifier>{aeab0e41-a268-4f8c-9e29-6095938bddef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{33ca37cd-6ae2-4e38-9457-ddc318ce0b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes\nlohmann">
+      <UniqueIdentifier>{ce90f658-4b10-47b8-ab3b-8c3813e52ddf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
