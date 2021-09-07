@@ -1,5 +1,7 @@
 #include "Server.h"
 #include "json.hpp"
+#include "Logger.h"
+
 using namespace nlohmann;
 
 int main()
@@ -75,6 +77,7 @@ int main()
 
 
 	Server server("127.0.0.1", 1248);
+	Log("Server is running at 127.0.0.1:1248");
 	server.StartMultiClientListener(&requestController);
 
 	return 0;

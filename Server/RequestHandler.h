@@ -97,8 +97,6 @@ struct Request
 	Request(std::string sPayload)
 	{
 		payload = sPayload;
-		///Parse();
-
 		if (payload.empty())
 		{
 			response.statusCode = BAD_REQUEST;
@@ -179,82 +177,6 @@ struct Request
 			}
 		}
 	}
-
-	void Parse()
-	{
-		if (payload.empty())
-		{
-			response.statusCode = StatusCode()["501"];
-			std::ostringstream ss;
-			ss << "HTTP/1.1 " << std::to_string(response.statusCode) << " " << StatusCodeString()[response.statusCode];
-			response.AddBodyText(ss.str());
-		}
-		else
-		{
-			response.statusCode = StatusCode()["200"];
-			auto cPayload = const_cast<char*>(payload.c_str());
-			char* nextToken = nullptr;
-			char* pToken = strtok_s(cPayload, "\r", &nextToken);
-			bool firstLineParsed = false;
-			bool headersParsed = false;
-			do
-			{
-				//body delimiter
-				if (strlen(pToken) == 1 && pToken[0] == '\n')
-				{
-					headersParsed = true;
-				}
-
-				//parse headers
-				if (!headersParsed && std::string(pToken).find(":") != std::string::npos)
-				{
-					char* nextDelimiter = nullptr;
-					char* delimiter = strtok_s(pToken, ":", &nextDelimiter);
-					std::string key = delimiter;
-					if (key.find('\n') != std::string::npos)
-						key.erase(key.find('\n'), 1);
-					delimiter = strtok_s(nullptr, ":", &nextDelimiter);
-					delimiter = delimiter == nullptr ? (char*)"\0" : delimiter;
-					headers.emplace(std::pair< std::string, std::string>(key, delimiter));
-				}
-				//parse first line
-				else if (!firstLineParsed)
-				{
-					char* nextSpace = nullptr;
-					char* pTokenWhiteSpace = strtok_s(pToken, " ", &nextSpace);
-					while (pTokenWhiteSpace != nullptr)
-					{
-						std::string value = std::string(pTokenWhiteSpace);
-						if (value.find('\n') != std::string::npos)
-							value.erase(value.find('\n'), 1);
-						if (verb.empty())
-						{
-							verb = value;
-						}
-						else if (endpoint.empty())
-						{
-							endpoint = value;
-						}
-						pTokenWhiteSpace = strtok_s(nullptr, " ", &nextSpace);
-					}
-					firstLineParsed = true;
-				}
-				//body
-				else if (headersParsed)
-				{
-					if (pToken != nullptr)
-					{
-						std::string value = std::string(pToken);
-						if (value.find('\n') != std::string::npos)
-							value.erase(value.find('\n'), 1);
-						if (!value.empty())
-							body.append(value);
-					}
-				}
-				pToken = strtok_s(nullptr, "\r", &nextToken);
-			} while (pToken != nullptr);
-		}
-	}
 };
 
 
@@ -268,8 +190,15 @@ class RequestController : public IRequestHandler
 {
 private:
 
-	std::map<std::string, std::function<std::string(Request)>> endPointsGet;
-	std::map<std::string, std::function<std::string(Request)>> endPointsPost;
+	/// <summary>
+	/// Endpoints for GET verb
+	/// </summary>
+	std::unordered_map<std::string, std::function<std::string(Request)>> endPointsGet;
+
+	/// <summary>
+	/// Endpoints for POST verb
+	/// </summary>
+	std::unordered_map<std::string, std::function<std::string(Request)>> endPointsPost;
 
 public:
 
@@ -298,17 +227,34 @@ public:
 				return findEndPoint->second(request);
 		}
 
-		request.response.statusCode = StatusCode()["404"];
+		request.response.statusCode = NOT_FOUND;
+		request.response.headers["Content-Length"] = "0";
 		return request.response.ToString();
 	}
 
+	/// <summary>
+	/// Add a new GET endpoint
+	/// </summary>
+	/// <param name="endPoint">Endpoint eg. /person</param>
+	/// <param name="handler">function to handle the request and response</param>
 	void AddGet(std::string endPoint, std::function<std::string(Request)> handler)
 	{
 		endPointsGet.emplace(std::pair<std::string, std::function<std::string(Request)>>(endPoint, handler));
 	}
 
+	/// <summary>
+	/// Add a new POST endpoint
+	/// </summary>
+	/// <param name="endPoint">Endpoint eg. /person</param>
+	/// <param name="handler">function to handle the request and response</param>
 	void AddPost(std::string endPoint, std::function<std::string(Request)> handler)
 	{
 		endPointsPost.emplace(std::pair<std::string, std::function<std::string(Request)>>(endPoint, handler));
+	}
+
+	~RequestController()
+	{
+		endPointsGet.clear();
+		endPointsPost.clear();
 	}
 };
