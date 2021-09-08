@@ -12,9 +12,6 @@
 
 /// <summary>
 /// Socket server (TCP) listener
-/// Usage:
-/// 	Server server("127.0.0.1", 1248);
-///     server.StartMultiClientListener();
 /// </summary>
 class Server
 {
@@ -49,7 +46,7 @@ private:
 		SOCKET serverSocket = socket(
 			AF_INET,		//IPV4
 			SOCK_STREAM,	//TCP
-			0);				// no protocol (we create our own protocol in this case)
+			0);
 
 		if (serverSocket == INVALID_SOCKET)
 		{
@@ -57,7 +54,6 @@ private:
 			auto wsaError = WSAGetLastError();
 			return serverSocket;
 		}
-
 
 		//https://docs.microsoft.com/pt-br/windows/win32/api/winsock2/nf-winsock2-htons
 		sAddrIn.sin_port = htons(serverPort); //resolve port
@@ -265,11 +261,22 @@ public:
 	/// Sends a message back to a given socket client
 	/// </summary>
 	/// <param name="socketClient">Socket client</param>
-	/// <param name="packet">Payload to send back to the client socket</param>
-	void SendToClient(int socketClient, const char* packet)
+	/// <param name="payload">Payload to send back to the client socket</param>
+	void SendToClient(int socketClient, const char* payload)
 	{
-		assert(socketClient > 0);
-		assert(packet != nullptr);
-		send(socketClient, packet, strlen(packet), 0);
+		assert(socketClient != INVALID_SOCKET);
+		assert(payload != nullptr);
+
+		int totalToSend = strlen(payload);
+		int sent = 0;
+		int offset = 0;
+		do
+		{
+			int bytesSent = send(socketClient, payload + offset, totalToSend, 0);
+			if (bytesSent <= 0) break;
+			sent += bytesSent;
+			totalToSend -= bytesSent;
+			offset += bytesSent;
+		} while (sent < totalToSend);
 	}
 };

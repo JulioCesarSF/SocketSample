@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "json.hpp"
 #include "Logger.h"
 
 using namespace nlohmann;
@@ -11,14 +10,7 @@ int main()
 	requestController.AddGet("/",
 		[](Request request) -> std::string
 		{
-			std::string messageToSend = "Hello World!";
-
-			request.response.headers["Content-Type"] = "text/plain";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-
-			request.response.AddBodyText(messageToSend);
-
-			return request.response.ToString();
+			return DefaultResponse::Ok("Hello World!");
 		});
 
 	requestController.AddGet("/json",
@@ -26,13 +18,7 @@ int main()
 		{
 			json jsonBody;
 			jsonBody["message"] = "Leo gay";
-			std::string messageToSend = jsonBody.dump();
-
-			request.response.headers["Content-Type"] = "application/json";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-
-			request.response.AddBodyText(messageToSend);
-			return request.response.ToString();
+			return DefaultResponse::OkJson(jsonBody);
 		});
 
 	requestController.AddPost("/process",
@@ -48,11 +34,7 @@ int main()
 				jsonBody["message"] = "You sent the name: " + name;
 			}
 
-			std::string messageToSend = jsonBody.dump();
-			request.response.headers["Content-Type"] = "application/json";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-			request.response.AddBodyText(messageToSend);
-			return request.response.ToString();
+			return DefaultResponse::OkJson(jsonBody);
 		});
 
 	requestController.AddPost("/",
@@ -68,13 +50,8 @@ int main()
 				jsonBody["message"] = "You sent the name: " + name;
 			}
 
-			std::string messageToSend = jsonBody.dump();
-			request.response.headers["Content-Type"] = "application/json";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-			request.response.AddBodyText(messageToSend);
-			return request.response.ToString();
+			return DefaultResponse::OkJson(jsonBody);
 		});
-
 
 	Server server("127.0.0.1", 1248);
 	Log("Server is running at 127.0.0.1:1248");

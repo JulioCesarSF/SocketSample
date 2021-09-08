@@ -17,6 +17,15 @@
     <ClInclude Include="json.hpp">
       <Filter>Includes\nlohmann</Filter>
     </ClInclude>
+    <ClInclude Include="StatusCode.h">
+      <Filter>HttpFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestResponse.h">
+      <Filter>HttpFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="IRequestHandler.h">
+      <Filter>HttpFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Helpers">
@@ -30,6 +39,9 @@
     </Filter>
     <Filter Include="Includes\nlohmann">
       <UniqueIdentifier>{ce90f658-4b10-47b8-ab3b-8c3813e52ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HttpFiles">
+      <UniqueIdentifier>{674f4c83-0b42-4138-abe9-ca1af9c31246}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

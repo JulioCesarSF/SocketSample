@@ -147,10 +147,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHelper.h" />
+    <ClInclude Include="IRequestHandler.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="RequestHandler.h" />
+    <ClInclude Include="RequestResponse.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="StatusCode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
