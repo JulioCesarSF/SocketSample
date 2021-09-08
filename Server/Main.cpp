@@ -55,7 +55,7 @@ int main()
 
 	Server server("127.0.0.1", 1248);
 	Log("Server is running at 127.0.0.1:1248");
-	server.StartMultiClientListener(&requestController);
+	server.Run(&requestController);
 
 	return 0;
 }

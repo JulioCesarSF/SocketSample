@@ -166,7 +166,7 @@ public:
 	/// Signal to shutdown server
 	/// Stop to listen for new clients
 	/// </summary>
-	bool shutdownServer = false;
+	bool shutdownServer = false;	
 
 	Server(const char* ip, u_short port) : serverIp(ip), serverPort(port)
 	{
@@ -197,9 +197,9 @@ public:
 	}
 
 	/// <summary>
-	/// Multiple client server
+	/// Run server
 	/// </summary>
-	void StartMultiClientListener(IRequestHandler* requestHandler = nullptr)
+	void Run(IRequestHandler* requestHandler = nullptr)
 	{
 		assert(initialized == true);
 		assert(serverSocket != INVALID_SOCKET);
