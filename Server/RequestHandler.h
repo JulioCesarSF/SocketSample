@@ -34,7 +34,9 @@ public:
 
 		Request request(payload);
 
-		if (request.verb == "GET")
+		switch (request.method)
+		{
+		case HttpMethod::GET:
 		{
 			auto findEndPoint = std::find_if(endPointsGet.begin(), endPointsGet.end(),
 				[&request](std::pair<std::string, std::function<std::string(Request)>> const& endPoint)
@@ -44,7 +46,8 @@ public:
 			if (findEndPoint != endPointsGet.end())
 				return findEndPoint->second(request);
 		}
-		else if (request.verb == "POST")
+		break;
+		case HttpMethod::POST:
 		{
 			auto findEndPoint = std::find_if(endPointsPost.begin(), endPointsPost.end(),
 				[&request](std::pair<std::string, std::function<std::string(Request)>> const& endPoint)
@@ -53,8 +56,8 @@ public:
 				});
 			if (findEndPoint != endPointsPost.end())
 				return findEndPoint->second(request);
+		}		
 		}
-
 		return DefaultResponse::NotFound();
 	}
 
@@ -76,6 +79,28 @@ public:
 	void AddPost(const std::string& endPoint, const std::function<std::string(Request)>& handler)
 	{
 		endPointsPost.emplace(std::pair<std::string, std::function<std::string(Request)>>(endPoint, handler));
+	}
+
+	/// <summary>
+	/// Add a given endpoint to this controller
+	/// </summary>
+	/// <param name="endPoint">EndPoint eg. /person</param>
+	/// <param name="process">function to handle the request and response</param>
+	template<HttpMethod method>
+	void Add(const std::string& endPoint, const std::function<std::string(Request)>& process)
+	{
+		assert(!endPoint.empty());
+		assert(process);
+
+		switch (method)
+		{
+		case HttpMethod::GET:
+			AddGet(endPoint, process);
+			break;
+		case HttpMethod::POST:
+			AddPost(endPoint, process);
+			break;
+		}
 	}
 
 	~RequestController()

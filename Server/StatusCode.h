@@ -4,6 +4,47 @@
 #include <map>
 
 /// <summary>
+/// HTTP methods
+/// </summary>
+enum class HttpMethod : uint16_t
+{
+	GET,
+	POST
+};
+
+namespace http
+{
+	/// <summary>
+/// Convert a given HttpMethod to string
+/// </summary>
+/// <param name="method"></param>
+/// <returns></returns>
+	inline std::string to_string(HttpMethod method)
+	{
+		switch (method)
+		{
+		case HttpMethod::GET:
+			return "GET";
+		case HttpMethod::POST:
+			return "POST";
+		}
+	}
+
+	/// <summary>
+	/// Convert a given method as string to enum
+	/// </summary>
+	/// <param name="method"></param>
+	/// <returns></returns>
+	inline HttpMethod to_string(const std::string& method)
+	{
+		HttpMethod eMethod = HttpMethod::GET;
+		if (method == "GET") eMethod = HttpMethod::GET;
+		else if (method == "POST") eMethod = HttpMethod::POST;
+		return eMethod;
+	}
+};
+
+/// <summary>
 /// Status codes
 /// </summary>
 enum HttpStatusCode

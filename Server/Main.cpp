@@ -1,19 +1,17 @@
 #include "Server.h"
 #include "Logger.h"
 
-using namespace nlohmann;
-
 int main()
 {
-	RequestController requestController;
+	RequestController controller;
 
-	requestController.AddGet("/",
+	controller.Add<HttpMethod::GET>("/",
 		[](Request request) -> std::string
 		{
 			return DefaultResponse::Ok("Hello World!");
 		});
 
-	requestController.AddGet("/json",
+	controller.Add<HttpMethod::GET>("/json",
 		[](Request request) -> std::string
 		{
 			json jsonBody;
@@ -21,7 +19,7 @@ int main()
 			return DefaultResponse::OkJson(jsonBody);
 		});
 
-	requestController.AddPost("/process",
+	controller.Add<HttpMethod::POST>("/process",
 		[](Request request) -> std::string
 		{
 			json jsonBody;
@@ -37,7 +35,7 @@ int main()
 			return DefaultResponse::OkJson(jsonBody);
 		});
 
-	requestController.AddPost("/",
+	controller.Add<HttpMethod::POST>("/",
 		[](Request request) -> std::string
 		{
 			json jsonBody;
@@ -55,7 +53,7 @@ int main()
 
 	Server server("127.0.0.1", 1248);
 	Log("Server is running at 127.0.0.1:1248");
-	server.Run(&requestController);
+	server.Run(&controller);
 
 	return 0;
 }

@@ -7,6 +7,9 @@
 #include <vector>
 #include <map>
 
+/// <summary>
+/// Response struct
+/// </summary>
 struct Response
 {
 	std::vector<std::string> body;
@@ -48,9 +51,13 @@ struct Response
 	}
 };
 
+/// <summary>
+/// Request struct
+/// </summary>
 struct Request
 {
-	std::string verb;
+	HttpMethod method;
+	std::string sMethod;
 	std::string endpoint;
 
 	std::map<std::string, std::string> headers;
@@ -101,9 +108,10 @@ struct Request
 						std::string value = std::string(pTokenWhiteSpace);
 						if (value.find('\n') != std::string::npos)
 							value.erase(value.find('\n'), 1);
-						if (verb.empty())
+						if (sMethod.empty())
 						{
-							verb = value;
+							sMethod = value;
+							method = http::to_string(sMethod);
 						}
 						else if (endpoint.empty())
 						{

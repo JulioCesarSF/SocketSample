@@ -166,7 +166,7 @@ public:
 	/// Signal to shutdown server
 	/// Stop to listen for new clients
 	/// </summary>
-	bool shutdownServer = false;	
+	bool shutdownServer = false;
 
 	Server(const char* ip, u_short port) : serverIp(ip), serverPort(port)
 	{
@@ -199,10 +199,11 @@ public:
 	/// <summary>
 	/// Run server
 	/// </summary>
-	void Run(IRequestHandler* requestHandler = nullptr)
+	void Run(IRequestHandler* requestHandler)
 	{
 		assert(initialized == true);
 		assert(serverSocket != INVALID_SOCKET);
+		assert(requestHandler != nullptr);
 
 		// set of clients (this is an array)
 		fd_set master;
