@@ -21,6 +21,8 @@ request_sender_t::request_sender_t() :
 
 request_sender_t::~request_sender_t()
 {
+	if (_socket != INVALID_SOCKET)
+		closesocket(_socket);
 	WSACleanup();
 	initialized = false;
 }
