@@ -9,27 +9,20 @@ Socket HTTP server
 
 # Get
 ```c++
-	RequestController requestController;
+	RequestController controller;
 
-	requestController.AddGet("/",
+	controller.Add<HttpMethod::GET>("/",
 		[](Request request) -> std::string
 		{
-			std::string messageToSend = "Hello World!";
-
-			request.response.headers["Content-Type"] = "text/plain";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-
-			request.response.AddBodyText(messageToSend);
-
-			return request.response.ToString();
+			return DefaultResponse::Ok("Hello World!");
 		});
 ```
 
 # Post
 ```c++
-	RequestController requestController;
+	RequestController controller;
 
-	requestController.AddPost("/process",
+	controller.Add<HttpMethod::POST>("/process",
 		[](Request request) -> std::string
 		{
 			json jsonBody;
@@ -42,18 +35,14 @@ Socket HTTP server
 				jsonBody["message"] = "You sent the name: " + name;
 			}
 
-			std::string messageToSend = jsonBody.dump();
-			request.response.headers["Content-Type"] = "application/json";
-			request.response.headers["Content-Length"] = std::to_string(messageToSend.size());
-			request.response.AddBodyText(messageToSend);
-			return request.response.ToString();
+			return DefaultResponse::OkJson(jsonBody);
 		});
 ```
 
 # Run server
 ```c++
 	Server server("127.0.0.1", 1248);
-	server.StartMultiClientListener(&requestController);
+	server.Run(&requestController);
 ```
 
 # Custom RequestController
@@ -62,6 +51,6 @@ You can create your own Controller, implement this class
 class IRequestHandler
 {
 public:
-	virtual std::string HandleRequest(std::string payload) = 0;
+	virtual std::string HandleRequest(const std::string& payload) = 0;
 };
 ```
