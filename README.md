@@ -46,8 +46,8 @@ Socket HTTP server
 ```
 
 # Custom RequestController
-You can create your own Controller, implement this class
-File to include: IRequestHandler.h
+* You can create your own Controller, implement this class
+* File to include: IRequestHandler.h
 ```c++
 class IRequestHandler
 {
