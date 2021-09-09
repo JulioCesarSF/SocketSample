@@ -30,7 +30,7 @@ public:
 	std::string HandleRequest(const std::string& payload)
 	{
 		if (payload.empty())
-			return DefaultResponse::BadRequest();
+			return default_response::BadRequest();
 
 		Request request(payload);
 
@@ -58,7 +58,7 @@ public:
 				return findEndPoint->second(request);
 		}		
 		}
-		return DefaultResponse::NotFound();
+		return default_response::NotFound();
 	}
 
 	/// <summary>

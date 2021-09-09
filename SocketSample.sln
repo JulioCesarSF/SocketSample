@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Python.Client", "Python.Client\Python.Client.pyproj", "{63ACE578-542D-40A1-98D9-4034F9DEF55C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "http_client", "http_client\http_client.vcxproj", "{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "http_client_tests", "http_client_tests\http_client_tests.vcxproj", "{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,26 @@ Global
 		{63ACE578-542D-40A1-98D9-4034F9DEF55C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63ACE578-542D-40A1-98D9-4034F9DEF55C}.Release|x64.ActiveCfg = Release|Any CPU
 		{63ACE578-542D-40A1-98D9-4034F9DEF55C}.Release|x86.ActiveCfg = Release|Any CPU
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Debug|x64.ActiveCfg = Debug|x64
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Debug|x64.Build.0 = Debug|x64
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Debug|x86.ActiveCfg = Debug|Win32
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Debug|x86.Build.0 = Debug|Win32
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Release|x64.ActiveCfg = Release|x64
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Release|x64.Build.0 = Release|x64
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Release|x86.ActiveCfg = Release|Win32
+		{CDD64B7A-A68D-4BF6-8DFA-009BCABDF5D8}.Release|x86.Build.0 = Release|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Debug|x64.ActiveCfg = Debug|x64
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Debug|x64.Build.0 = Debug|x64
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Debug|x86.ActiveCfg = Debug|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Debug|x86.Build.0 = Debug|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Release|Any CPU.ActiveCfg = Release|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Release|x64.ActiveCfg = Release|x64
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Release|x64.Build.0 = Release|x64
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Release|x86.ActiveCfg = Release|Win32
+		{4A504C33-2E1A-44F5-9928-0F8966F8A4BF}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

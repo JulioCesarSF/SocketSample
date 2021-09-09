@@ -8,7 +8,7 @@ int main()
 	controller.Add<HttpMethod::GET>("/",
 		[](Request request) -> std::string
 		{
-			return DefaultResponse::Ok("Hello World!");
+			return default_response::Ok("Hello World!");
 		});
 
 	controller.Add<HttpMethod::GET>("/json",
@@ -16,7 +16,7 @@ int main()
 		{
 			json jsonBody;
 			jsonBody["message"] = "Leo gay";
-			return DefaultResponse::OkJson(jsonBody);
+			return default_response::OkJson(jsonBody);
 		});
 
 	controller.Add<HttpMethod::POST>("/process",
@@ -32,7 +32,7 @@ int main()
 				jsonBody["message"] = "You sent the name: " + name;
 			}
 
-			return DefaultResponse::OkJson(jsonBody);
+			return default_response::OkJson(jsonBody);
 		});
 
 	controller.Add<HttpMethod::POST>("/",
@@ -47,8 +47,12 @@ int main()
 				std::string name = jToken.value<std::string>("name", "");
 				jsonBody["message"] = "You sent the name: " + name;
 			}
+			else
+			{
+				jsonBody["message"] = "Post received";
+			}
 
-			return DefaultResponse::OkJson(jsonBody);
+			return default_response::OkJson(jsonBody);
 		});
 
 	Server server("127.0.0.1", 1248);

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="http_client.h" />
+    <ClInclude Include="response.h">
+      <Filter>Response</Filter>
+    </ClInclude>
+    <ClInclude Include="request.h">
+      <Filter>Request</Filter>
+    </ClInclude>
+    <ClInclude Include="http_utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="http_client.cpp" />
+    <ClCompile Include="request.cpp">
+      <Filter>Request</Filter>
+    </ClCompile>
+    <ClCompile Include="response.cpp">
+      <Filter>Response</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Request">
+      <UniqueIdentifier>{7509f06c-27fd-4344-8188-3251e8775d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Response">
+      <UniqueIdentifier>{94268677-64bf-4207-a197-1d19409a19a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{6f0742a6-ad13-4063-bcfc-e4793db4ac56}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

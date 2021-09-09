@@ -23,7 +23,7 @@ public:
 /// <summary>
 /// Support namespace
 /// </summary>
-namespace DefaultResponse
+namespace default_response
 {
 	/// <summary>
 	/// Response for status code 200
@@ -36,6 +36,7 @@ namespace DefaultResponse
 		response.headers["Content-Type"] = contentType;
 		response.headers["Content-Length"] = std::to_string(body.size());
 		response.AddBodyText(body);
+		response.headers["Access-Control-Allow-Origin"] = "*";
 		return response;
 	}
 
@@ -51,6 +52,7 @@ namespace DefaultResponse
 		response.headers["Content-Type"] = "application/json";
 		response.headers["Content-Length"] = std::to_string(jsonAsString.size());
 		response.AddBodyText(jsonAsString);
+		response.headers["Access-Control-Allow-Origin"] = "*";
 		return response;
 	}
 
@@ -66,6 +68,7 @@ namespace DefaultResponse
 		std::string body = StatusCodeString()[response.statusCode];
 		response.headers["Content-Length"] = std::to_string(body.size());
 		response.AddBodyText(body);
+		response.headers["Access-Control-Allow-Origin"] = "*";
 		return response;
 	}
 
@@ -81,6 +84,7 @@ namespace DefaultResponse
 		std::string body = StatusCodeString()[response.statusCode];
 		response.headers["Content-Length"] = std::to_string(body.size());
 		response.AddBodyText(body);
+		response.headers["Access-Control-Allow-Origin"] = "*";
 		return response;
 	}
 
@@ -96,6 +100,7 @@ namespace DefaultResponse
 		std::string body = StatusCodeString()[response.statusCode];
 		response.headers["Content-Length"] = std::to_string(body.size());
 		response.AddBodyText(body);
+		response.headers["Access-Control-Allow-Origin"] = "*";
 		return response;
 	}
 };
