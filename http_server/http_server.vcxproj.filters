@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="http_server.h" />
+    <ClInclude Include="request.h">
+      <Filter>request</Filter>
+    </ClInclude>
+    <ClInclude Include="response.h">
+      <Filter>response</Filter>
+    </ClInclude>
+    <ClInclude Include="http_utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="request_handler.h">
+      <Filter>handler</Filter>
+    </ClInclude>
+    <ClInclude Include="default_controller.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="default_response.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="json.h">
+      <Filter>external_libs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="http_server.cpp" />
+    <ClCompile Include="request.cpp">
+      <Filter>request</Filter>
+    </ClCompile>
+    <ClCompile Include="response.cpp">
+      <Filter>response</Filter>
+    </ClCompile>
+    <ClCompile Include="default_controller.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
+    <ClCompile Include="http_utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="default_response.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="request">
+      <UniqueIdentifier>{46fffce7-ac5d-4a9e-84ec-ed20bd6193f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="response">
+      <UniqueIdentifier>{513226dd-b622-458e-8cf4-7dad6bfbdd62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{843f35be-73ea-4ce7-857f-98eb8055b98f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="handler">
+      <UniqueIdentifier>{bfbe4451-7492-4921-8696-553318b090ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller">
+      <UniqueIdentifier>{9c2d82f9-a8bc-40a8-964f-1583d96685f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external_libs">
+      <UniqueIdentifier>{c68c72a9-fedb-44b3-a5f6-0ce070fbc735}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
