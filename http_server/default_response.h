@@ -31,7 +31,7 @@ namespace http_server
 	/// Response for status code 404
 	/// </summary>
 	/// <returns></returns>
-	response_t not_found();
+	response_t not_found(std::string body = "");
 
 	/// <summary>
 	/// Response for status code 500

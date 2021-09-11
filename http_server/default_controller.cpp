@@ -2,40 +2,57 @@
 #include "http_utils.h"
 #include "default_response.h"
 
+#include <future>
+
 using namespace http_server;
 
 std::string default_controller_t::handle_request(const std::string& payload)
 {
-	if (payload.empty())
-		return bad_request();
-
-	request_t request(payload);
-
-	switch (request._http_method)
-	{
-	case http_method_e::GET:
-	{
-		auto controller_endpoint = std::find_if(end_points_get.begin(), end_points_get.end(),
-			[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+	auto task = std::async(
+		[&]() -> std::string {
+			controller_mutex.lock();
+			if (payload.empty())
 			{
-				return endPoint.first == request._endpoint;
-			});
-		if (controller_endpoint != end_points_get.end())
-			return controller_endpoint->second(request);
-	}
-	break;
-	case http_method_e::POST:
-	{
-		auto controller_endpoint = std::find_if(end_points_post.begin(), end_points_post.end(),
-			[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+				controller_mutex.unlock();
+				return bad_request();
+			}
+
+			request_t request(payload);
+
+			switch (request._http_method)
 			{
-				return endPoint.first == request._endpoint;
-			});
-		if (controller_endpoint != end_points_post.end())
-			return controller_endpoint->second(request);
-	}
-	}
-	return not_found();
+			case http_method_e::GET:
+			{
+				auto controller_endpoint = std::find_if(end_points_get.begin(), end_points_get.end(),
+					[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+					{
+						return endPoint.first == request._endpoint;
+					});
+				if (controller_endpoint != end_points_get.end())
+				{
+					controller_mutex.unlock();
+					return controller_endpoint->second(request);
+				}
+			}
+			break;
+			case http_method_e::POST:
+			{
+				auto controller_endpoint = std::find_if(end_points_post.begin(), end_points_post.end(),
+					[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+					{
+						return endPoint.first == request._endpoint;
+					});
+				if (controller_endpoint != end_points_post.end())
+				{
+					controller_mutex.unlock();
+					return controller_endpoint->second(request);
+				}
+			}
+			}
+			controller_mutex.unlock();
+			return not_found();
+		});
+	return task.get();
 }
 
 void default_controller_t::add_get(const std::string& endpoint, std::function<std::string(request_t)> handler)

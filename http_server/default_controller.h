@@ -7,6 +7,8 @@
 #include <map>
 #include <vector>
 #include <functional>
+#include <thread>
+#include <mutex>
 
 namespace http_server
 {
@@ -26,6 +28,8 @@ namespace http_server
 		/// Endpoints for POST verb
 		/// </summary>
 		std::unordered_map<std::string, std::function<std::string(request_t)>> end_points_post;
+
+		std::mutex controller_mutex;
 
 	public:
 

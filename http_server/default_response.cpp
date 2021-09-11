@@ -37,12 +37,15 @@ response_t http_server::bad_request()
 	return response;
 }
 
-response_t http_server::not_found()
+response_t http_server::not_found(std::string body)
 {
 	response_t response;
 	response._status_code = NOT_FOUND;
 	response._headers["Content-Type"] = "text/plain";
-	std::string body = status_code_string_t()[response._status_code];
+	if (body.empty())
+	{
+		body = status_code_string_t()[response._status_code];
+	}
 	response._headers["Content-Length"] = std::to_string(body.size());
 	response.add_body_text(body);
 	response._headers["Access-Control-Allow-Origin"] = "*";
