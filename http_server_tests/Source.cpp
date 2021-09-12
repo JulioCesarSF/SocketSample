@@ -31,8 +31,8 @@ int main()
 			return ok_json(response_json);
 		});
 
-	server_t server("127.0.0.1", 1248);
-	server.run(&controller);
+	server_t server("127.0.0.1", 1248, controller);
+	server.run_queue();
 
 	return 0;
 }

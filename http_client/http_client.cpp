@@ -116,5 +116,7 @@ response_t request_sender_t::send_request(request_t& request)
 		response.build_response();
 	}
 
+	closesocket(_socket);
+
 	return response;
 }

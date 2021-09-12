@@ -23,6 +23,9 @@
     <ClInclude Include="json.h">
       <Filter>external_libs</Filter>
     </ClInclude>
+    <ClInclude Include="benchmark.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="http_server.cpp" />
@@ -39,6 +42,9 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="default_response.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="benchmark.cpp">
       <Filter>utils</Filter>
     </ClCompile>
   </ItemGroup>

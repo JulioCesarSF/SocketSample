@@ -1,6 +1,7 @@
 #pragma once
 
 #include "request_handler.h"
+#include "benchmark.h"
 
 #define MESSAGE_BUFFER_SIZE 1024 * 5
 #define NOMINMAX
@@ -9,31 +10,78 @@
 
 #include <vector>
 #include <functional>
-
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
-
 #include <iostream>
 #include <chrono>
+#include <queue>
+#include <optional>
 
 namespace http_server
 {
-	class Timer
+	struct n_socket_client_t
 	{
-	public:
-		Timer() : beg_(clock_::now()) {}
-		void reset() { beg_ = clock_::now(); }
-		double elapsed() const {
-			return std::chrono::duration_cast<second_>
-				(clock_::now() - beg_).count();
+		SOCKET socket;
+		std::string request;
+		std::string response;
+		double time_to_accept;
+	};
+
+	class socket_queue_t
+	{
+		std::vector<n_socket_client_t> _socket_queue;
+		mutable std::mutex mutex_;
+
+		bool empty() const
+		{
+			return _socket_queue.empty();
 		}
 
-	private:
-		typedef std::chrono::high_resolution_clock clock_;
-		typedef std::chrono::duration<double, std::ratio<1> > second_;
-		std::chrono::time_point<clock_> beg_;
+	public:
+		socket_queue_t() = default;
+		socket_queue_t(const socket_queue_t&) = delete;
+		socket_queue_t& operator=(const socket_queue_t&) = delete;
+
+		socket_queue_t(socket_queue_t&& other) noexcept
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			_socket_queue = std::move(other._socket_queue);
+		}
+
+		virtual ~socket_queue_t() { }
+
+		unsigned long size() const
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			return _socket_queue.size();
+		}
+
+		std::optional<n_socket_client_t> pop()
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			if (_socket_queue.empty())
+			{
+				return {};
+			}
+			n_socket_client_t tmp = _socket_queue.front();
+			_socket_queue.pop_back();
+			return tmp;
+		}
+
+		void push(const n_socket_client_t& item)
+		{
+			std::lock_guard<std::mutex> lock(mutex_);
+			_socket_queue.push_back(item);
+			/*auto already_queue = std::find_if(_socket_queue.begin(), _socket_queue.end(),
+				[&](n_socket_client_t ss)
+				{
+					return ss.socket == item.socket;
+				});*/
+			/*if (already_queue == _socket_queue.end())
+				_socket_queue.push_back(item);		*/	
+		}
 	};
 
 	/// <summary>
@@ -77,14 +125,6 @@ namespace http_server
 			std::string request = "";
 		};
 
-		struct socket_client_t
-		{
-			SOCKET socket;
-			recv_struct_t recv;
-			bool can_read = true;
-			bool can_write = false;
-		};
-
 		/// <summary>
 		/// Receives all data from client socket
 		/// </summary>
@@ -104,24 +144,20 @@ namespace http_server
 		/// </summary>
 		void clear();
 
-		/// <summary>
-		/// run_new
-		/// </summary>
-		struct server_fd_sets_t
-		{
-			fd_set fd_read; //readable, can accept and recv
-			fd_set fd_write; //writability, send
-			fd_set fd_error; //writability, send
-		};
-		server_fd_sets_t _sets;
-		std::vector<socket_client_t> _server_clients;
-
-		void acquire_new_client(request_handler_i* controller);
-		void start_sets();
-		void process_sets(request_handler_i* controller);
-
+		//aux log
 		std::function<void(std::string)> _log_callback;
 		void log_text(std::string log_message);
+
+		//queue stuff
+		std::atomic<int> clients_consumed;
+		double time_per_client;
+		void consume_queue();
+		socket_queue_t socket_queue;
+		std::thread socket_consumer;
+		std::mutex server_mutex;
+		std::mutex consumer_lock;
+		request_handler_i& _controller;
+		fd_set queue_set;
 	public:
 
 		/// <summary>
@@ -135,17 +171,20 @@ namespace http_server
 		/// </summary>
 		bool shutdown_server = false;
 
-		server_t(const char* ip, u_short port);
-
-		server_t(const char* ip, u_short port, std::function<void(std::string)> log_callback);
+		server_t(const char* ip, u_short port, request_handler_i& controller);
 
 		virtual ~server_t();
 
+		void set_log_callback(std::function<void(std::string)> callback);
+
 		/// <summary>
 		/// Multiple client server
-		/// </summary>
-		void run(request_handler_i* controller);
+		/// </summary>		
+		void run();
 
-		void run_new(request_handler_i* controller);
+		/// <summary>
+		/// Multiclient and multirequest server
+		/// </summary>
+		void run_queue();
 	};
 }

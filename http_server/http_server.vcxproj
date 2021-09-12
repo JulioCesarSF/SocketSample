@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="benchmark.h" />
     <ClInclude Include="default_controller.h" />
     <ClInclude Include="default_response.h" />
     <ClInclude Include="http_server.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="response.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="benchmark.cpp" />
     <ClCompile Include="default_controller.cpp" />
     <ClCompile Include="default_response.cpp" />
     <ClCompile Include="http_server.cpp" />

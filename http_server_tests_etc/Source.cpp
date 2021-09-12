@@ -42,11 +42,12 @@ int main()
 			return ok();
 		});
 
-	server_t server("127.0.0.1", 1248, 
-		[] (std::string msg) {
-			std::cout << msg << std::endl;
+	server_t server("127.0.0.1", 1248, controller);
+	server.set_log_callback(
+		[](std::string msg) {
+			std::cout << "\r" << msg;
 		});
-	server.run_new(&controller);
+	server.run_queue();
 
 	return 0;
 }
