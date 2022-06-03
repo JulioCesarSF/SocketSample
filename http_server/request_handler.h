@@ -23,7 +23,6 @@ namespace http_server
 		/// </summary>
 		/// <param name="payload">Incoming request</param>
 		/// <returns>http response as string</returns>
-		virtual std::string handle_request(const std::string& payload) = 0;
 		virtual std::string handle_request(const request_t& request) = 0;
 	};
 };

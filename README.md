@@ -6,6 +6,11 @@ Socket HTTP server
 * To start, include files: http_server.h, default_controller.h, default_response.h" and http_utils.h"
 * If you want json, include: json.hpp
 * Link to: Ws2_32.lib
+* Visual Studio 2022 (v143)
+
+# Run the sample
+* Build project: http_client_test and http_server_tests_etc
+* Server sample contains a log with the number of requests handled and display an average value time to handle requests
 
 # Get
 ```c++
@@ -68,7 +73,8 @@ public:
 	/// </summary>
 	/// <param name="payload">Incoming request</param>
 	/// <returns>http response as string</returns>
-	virtual std::string handle_request(const std::string& payload) = 0;
 	virtual std::string handle_request(const request_t& request) = 0;
 };
 ```
+# Server log callback
+* To add a log callback call set_log_callback function
