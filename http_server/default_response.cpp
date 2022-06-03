@@ -10,6 +10,15 @@ response_t http_server::ok(std::string body, std::string contentType)
 	response._headers["Content-Length"] = std::to_string(body.size());
 	response.add_body_text(body);
 	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Closed";
+	response._headers["Cache-control"] = "no-cache";
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+ 	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
 	return response;
 }
 
@@ -22,6 +31,15 @@ response_t http_server::ok_json(json body)
 	response._headers["Content-Length"] = std::to_string(json_as_string.size());
 	response.add_body_text(json_as_string);
 	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Closed";
+	response._headers["Cache-control"] = "no-cache";
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
 	return response;
 }
 
@@ -34,6 +52,15 @@ response_t http_server::bad_request()
 	response._headers["Content-Length"] = std::to_string(body.size());
 	response.add_body_text(body);
 	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Closed";
+	response._headers["Cache-control"] = "no-cache";
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
 	return response;
 }
 
@@ -49,6 +76,15 @@ response_t http_server::not_found(std::string body)
 	response._headers["Content-Length"] = std::to_string(body.size());
 	response.add_body_text(body);
 	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Closed";
+	response._headers["Cache-control"] = "no-cache";
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
 	return response;
 }
 
@@ -61,5 +97,14 @@ response_t http_server::internal_server_error()
 	response._headers["Content-Length"] = std::to_string(body.size());
 	response.add_body_text(body);
 	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Closed";
+	response._headers["Cache-control"] = "no-cache";
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
 	return response;
 }
