@@ -2,56 +2,73 @@
 Socket HTTP server
 
 ## Sample server
-* To add endpoints you need to use RequestController add functions.
-* To start, include files: Server.h and RequestHandler.h
+* To add endpoints you need to use default_controller_t add functions.
+* To start, include files: http_server.h, default_controller.h, default_response.h" and http_utils.h"
 * If you want json, include: json.hpp
 * Link to: Ws2_32.lib
 
 # Get
 ```c++
-	RequestController controller;
+	default_controller_t controller;
 
-	controller.Add<HttpMethod::GET>("/",
-		[](Request request) -> std::string
+	controller.add_get("/",
+		[](request_t request) -> std::string
 		{
-			return DefaultResponse::Ok("Hello World!");
+			return ok("Hello");
 		});
 ```
 
 # Post
 ```c++
-	RequestController controller;
+	default_controller_t controller;
 
-	controller.Add<HttpMethod::POST>("/process",
-		[](Request request) -> std::string
+	controller.add_post("/join",
+		[](request_t request) -> std::string
 		{
-			json jsonBody;
-
-			auto contentTypeReceived = request.headers["Content-Type"];
-			if (contentTypeReceived.find("json") != std::string::npos)
+			if (request._headers["Content-Type"].find("json") != std::string::npos)
 			{
-				json jToken = json::parse(request.body);
-				std::string name = jToken.value<std::string>("name", "");
-				jsonBody["message"] = "You sent the name: " + name;
+				json request_json = json::parse(request._body);
+				auto user_name = request_json.value("username", "");
+				if (user_name.empty()) return not_found("username missing");
+			}
+			else
+			{
+				return not_found("username missing");
 			}
 
-			return DefaultResponse::OkJson(jsonBody);
+			return ok();
 		});
 ```
 
 # Run server
 ```c++
-	Server server("127.0.0.1", 1248);
-	server.Run(&requestController);
+server_t server("127.0.0.1", 1248, controller);
+server.run_queue();
 ```
 
 # Custom RequestController
 * You can create your own Controller, implement this class
-* File to include: IRequestHandler.h
+* File to include: request_handler.h
 ```c++
-class IRequestHandler
+/// <summary>
+/// Abstract class to create a controller
+/// </summary>
+class request_handler_i
 {
 public:
-	virtual std::string HandleRequest(const std::string& payload) = 0;
+
+	/// <summary>
+	/// Controller name
+	/// </summary>
+	/// <returns></returns>
+	virtual const char* controller_name() = 0;
+
+	/// <summary>
+	/// Process a given payload
+	/// </summary>
+	/// <param name="payload">Incoming request</param>
+	/// <returns>http response as string</returns>
+	virtual std::string handle_request(const std::string& payload) = 0;
+	virtual std::string handle_request(const request_t& request) = 0;
 };
 ```
