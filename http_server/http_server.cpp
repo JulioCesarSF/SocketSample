@@ -3,6 +3,8 @@
 
 #include <thread>
 #include <mutex>
+#include "default_response.h"
+#include "request.h"
 
 using namespace http_server;
 
@@ -182,8 +184,17 @@ void server_t::run()
 
 				if (sRequest.process_response)
 				{
-					auto response = _controller.handle_request(sRequest.request);
-					send_all(int(currentSocket), response.c_str()); //send response
+					std::string s_response;
+					if (sRequest.request.empty())
+					{
+						s_response = bad_request();
+					}
+					else
+					{
+						request_t request(sRequest.request);
+						s_response = _controller.handle_request(request);
+					}
+					send_all(int(currentSocket), s_response.c_str()); //send response
 				}
 
 				::closesocket(currentSocket); //shutdown client socket
@@ -249,8 +260,17 @@ void server_t::consume_queue()
 	recv_struct_t rcv_struct = recv_all(client.socket);
 	if (rcv_struct.process_response)
 	{
-		auto response = _controller.handle_request(rcv_struct.request);
-		send_all(client.socket, response.c_str()); //send response					
+		std::string s_response;
+		if (rcv_struct.request.empty())
+		{
+			s_response = bad_request();
+		}
+		else
+		{
+			request_t request(rcv_struct.request);
+			s_response = _controller.handle_request(request);
+		}
+		send_all(client.socket, s_response.c_str()); //send response					
 	}
 	::closesocket(client.socket); //shutdown client socket
 
@@ -277,7 +297,7 @@ void server_t::run_queue()
 
 			socket_queue.push(n_socket_client_t{ new_client, "", "", benchmark.elapsed() });
 		}
-	};	
+	};
 
 	while (!shutdown_server)
 	{

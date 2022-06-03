@@ -35,6 +35,10 @@ namespace http_server
 
 		std::string handle_request(const std::string& payload);
 
+		std::string handle_request(const request_t& request);
+
+		const char* controller_name();
+
 		/// <summary>
 		/// Add a new GET endpoint
 		/// </summary>

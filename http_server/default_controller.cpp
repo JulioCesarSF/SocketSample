@@ -55,6 +55,54 @@ std::string default_controller_t::handle_request(const std::string& payload)
 	return task.get();
 }
 
+std::string http_server::default_controller_t::handle_request(const request_t& request)
+{
+	auto task = std::async(
+		[&]() -> std::string {
+			controller_mutex.lock();
+
+			switch (request._http_method)
+			{
+			case http_method_e::GET:
+			{
+				auto controller_endpoint = std::find_if(end_points_get.begin(), end_points_get.end(),
+					[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+					{
+						return endPoint.first == request._endpoint;
+					});
+				if (controller_endpoint != end_points_get.end())
+				{
+					controller_mutex.unlock();
+					return controller_endpoint->second(request);
+				}
+			}
+			break;
+			case http_method_e::POST:
+			{
+				auto controller_endpoint = std::find_if(end_points_post.begin(), end_points_post.end(),
+					[&request](std::pair<std::string, std::function<std::string(request_t)>> const& endPoint)
+					{
+						return endPoint.first == request._endpoint;
+					});
+				if (controller_endpoint != end_points_post.end())
+				{
+					controller_mutex.unlock();
+					return controller_endpoint->second(request);
+				}
+			}
+			}
+			controller_mutex.unlock();
+			return not_found();
+		});
+
+	return task.get();
+}
+
+const char* http_server::default_controller_t::controller_name()
+{
+	return "/";
+}
+
 void default_controller_t::add_get(const std::string& endpoint, std::function<std::string(request_t)> handler)
 {
 	end_points_get.emplace(std::pair<std::string, std::function<std::string(request_t)>>(endpoint, handler));
