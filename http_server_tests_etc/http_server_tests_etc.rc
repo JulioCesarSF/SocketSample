@@ -1,0 +1,3 @@
+#include "resource.h"
+
+IDR_HTML1 HTML "html1.html"

@@ -49,8 +49,36 @@ request_t::request_t(std::string payload)
 					}
 					else if (_endpoint.empty())
 					{
-						_endpoint = value;
-						firstLineParsed = true;
+						//	"/?file=test.txt&key=value"
+						//	"/product?file=test.txt&key=value"
+						auto query_string_start = value.find("?");
+						if (query_string_start == std::string::npos)
+						{
+							_endpoint = value;
+							firstLineParsed = true;
+						}
+						else // parse query string
+						{
+							_endpoint = value.substr(0, query_string_start);
+							auto raw_query = value.substr(query_string_start + 1);
+							auto c_raw_query = const_cast<char*>(raw_query.c_str());
+
+							char* query_token = nullptr;
+							char* query_key_token = strtok_s(c_raw_query, "&", &query_token);
+
+							while (query_key_token != nullptr)
+							{
+								char* key_context = nullptr;
+								char* key = strtok_s(query_key_token, "=", &key_context);
+								char* value = strtok_s(nullptr, "=", &key_context);
+								_query_string.emplace(std::pair< std::string, std::string>{ std::string(key), std::string(value) });
+
+								query_key_token = strtok_s(nullptr, "&", &query_token);
+							}
+
+							firstLineParsed = true;
+						}
+
 						break;
 					}
 					pTokenWhiteSpace = strtok_s(nullptr, " ", &nextSpace);

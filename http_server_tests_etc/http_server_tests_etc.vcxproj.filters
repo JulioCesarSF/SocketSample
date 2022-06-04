@@ -3,4 +3,13 @@
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="http_server_tests_etc.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="html1.html" />
+  </ItemGroup>
 </Project>

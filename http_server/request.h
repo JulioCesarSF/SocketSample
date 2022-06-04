@@ -18,6 +18,7 @@ namespace http_server
 		http_method_e _http_method;
 		std::string s_http_method;
 		std::string _endpoint;
+		std::map<std::string, std::string> _query_string;
 		std::map<std::string, std::string> _headers;
 		std::string _body;
 		std::string _payload; //request full text
