@@ -1,8 +1,5 @@
 #pragma once
 
-#include "request_handler.h"
-#include "benchmark.h"
-
 #define MESSAGE_BUFFER_SIZE 1024 * 5
 #define NOMINMAX
 #include <WS2tcpip.h>
@@ -18,7 +15,9 @@
 #include <chrono>
 #include <queue>
 #include <optional>
-#include <regex>
+
+#include "request_handler.h"
+#include "benchmark.h"
 
 namespace http_server
 {

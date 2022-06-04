@@ -65,7 +65,7 @@ SOCKET server_t::setup_socket()
 		server_socket = INVALID_SOCKET;
 		throw std::runtime_error("Could not to start to listen on server socket: " + std::to_string(wsa_error));
 	}
-	
+
 	return server_socket;
 }
 
@@ -112,7 +112,7 @@ server_t::server_t(const char* ip, u_short port, request_handler_i& controller) 
 	if (wsa_startup != 0)
 	{
 		auto wsa_error = ::WSAGetLastError();
-		throw std::runtime_error("Could not initialize windows socket: " + std::to_string(wsa_error));		
+		throw std::runtime_error("Could not initialize windows socket: " + std::to_string(wsa_error));
 	}
 
 	_server_socket = setup_socket();
@@ -321,23 +321,23 @@ void server_t::run_queue(bool run_on_thread)
 	assert(initialized == true);
 	assert(_server_socket != INVALID_SOCKET);
 
-	auto accept_ = [&]
-	{
-		benchmark_t benchmark;
-		SOCKET new_client = accept_new_client(_server_socket);
-		if (new_client != INVALID_SOCKET)
-		{
-			u_long mode = 1;  //non-blocking socket
-			::ioctlsocket(new_client, FIONBIO, &mode);
-			socket_queue.push(n_socket_client_t{ new_client, "", "", benchmark.elapsed() });
-		}
-	};
-
 	if (!run_on_thread)
 	{
 		while (!shutdown_server)
 		{
-			std::thread([&] {accept_(); }).detach();
+			std::thread(
+				[&] {
+					benchmark_t benchmark;
+					SOCKET new_client = accept_new_client(_server_socket);
+					if (new_client != INVALID_SOCKET)
+					{
+						u_long mode = 1;  //non-blocking socket
+						::ioctlsocket(new_client, FIONBIO, &mode);
+						socket_queue.push(n_socket_client_t{ new_client, "", "", benchmark.elapsed() });
+					}
+				}
+			).detach();
+
 			consume_queue();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
@@ -348,7 +348,19 @@ void server_t::run_queue(bool run_on_thread)
 			[&]() {
 				while (!shutdown_server)
 				{
-					std::thread([&] {accept_(); }).detach();
+					std::thread(
+						[&] {
+							benchmark_t benchmark;
+							SOCKET new_client = accept_new_client(_server_socket);
+							if (new_client != INVALID_SOCKET)
+							{
+								u_long mode = 1;  //non-blocking socket
+								::ioctlsocket(new_client, FIONBIO, &mode);
+								socket_queue.push(n_socket_client_t{ new_client, "", "", benchmark.elapsed() });
+							}
+						}
+					).detach();
+
 					consume_queue();
 					std::this_thread::sleep_for(std::chrono::microseconds(500));
 				}
