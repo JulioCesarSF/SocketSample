@@ -11,5 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="html1.html" />
+    <None Include="javascri.bin" />
+    <None Include="test.js" />
   </ItemGroup>
 </Project>

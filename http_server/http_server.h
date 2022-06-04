@@ -18,6 +18,7 @@
 #include <chrono>
 #include <queue>
 #include <optional>
+#include <regex>
 
 namespace http_server
 {
@@ -156,8 +157,12 @@ namespace http_server
 		std::thread socket_consumer;
 		std::mutex server_mutex;
 		std::mutex consumer_lock;
-		request_handler_i& _controller;
+		request_handler_i& _controller;		
 		fd_set queue_set;
+
+		std::vector<request_item_t> server_endpoints;
+		bool is_endpoint_available(request_t& request);
+
 	public:
 
 		/// <summary>

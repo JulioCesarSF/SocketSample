@@ -20,11 +20,18 @@ namespace http_server
 		std::string _endpoint;
 		std::map<std::string, std::string> _query_string;
 		std::map<std::string, std::string> _headers;
+		std::string _param_value;
 		std::string _body;
 		std::string _payload; //request full text
 
 		response_t _response;
 
 		request_t(std::string payload);
+	};
+
+	struct request_item_t
+	{
+		http_method_e _http_method;
+		std::string _endpoint;
 	};
 };

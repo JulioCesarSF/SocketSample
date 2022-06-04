@@ -158,6 +158,8 @@
     <None Include="html1.html">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="javascri.bin" />
+    <None Include="test.js" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,6 +35,8 @@ namespace http_server
 
 		std::string handle_request(const std::string& payload);
 
+		std::vector<request_item_t> get_endpoints();
+
 		std::string handle_request(const request_t& request);
 
 		const char* controller_name();

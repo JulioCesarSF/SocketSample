@@ -110,6 +110,8 @@ server_t::server_t(const char* ip, u_short port, request_handler_i& controller) 
 	assert(ip != nullptr);
 	assert(port > 0 && port <= 65535);
 
+	server_endpoints = _controller.get_endpoints();
+
 	WORD socketVersion = MAKEWORD(2, 2);
 	WSADATA wsaData;
 	ZeroMemory(&wsaData, sizeof(WSADATA));
@@ -268,7 +270,11 @@ void server_t::consume_queue()
 		else
 		{
 			request_t request(rcv_struct.request);
-			s_response = _controller.handle_request(request);
+			s_response = is_endpoint_available(request) ?
+				_controller.handle_request(request) :
+				bad_request();
+
+			//s_response = _controller.handle_request(request);
 		}
 		send_all(client.socket, s_response.c_str()); //send response					
 	}
@@ -279,6 +285,50 @@ void server_t::consume_queue()
 	auto avrg = time_per_client / clients_consumed;
 	log_text("Clients consumed: " + std::to_string(clients_consumed) + " avg per request (accept/recv/send/closesocket): " + std::to_string(avrg));
 	return;
+}
+
+bool http_server::server_t::is_endpoint_available(request_t& request)
+{
+	auto endpoint_exists = std::find_if(server_endpoints.begin(), server_endpoints.end(),
+		[&](const request_item_t& item)
+		{
+			if (request._endpoint.size() == item._endpoint.size())
+				return request._http_method == item._http_method && request._endpoint == item._endpoint;
+
+			const auto contains_param = item._endpoint.find("{") ;
+			if (contains_param == std::string::npos)
+				return request._http_method == item._http_method && request._endpoint == item._endpoint;
+			
+			std::string copy_end_point = item._endpoint.substr(0, item._endpoint.find_last_of("/"));
+			
+
+			return request._http_method == item._http_method && contains_param && (request._endpoint.find(copy_end_point) != std::string::npos);
+		});
+
+	auto found = endpoint_exists != server_endpoints.end();
+
+	if (found)
+	{
+		// check for url params
+		auto param_pos_start = endpoint_exists->_endpoint.find("{");
+		auto param_pos_end = endpoint_exists->_endpoint.find("}");
+		if ((param_pos_start != std::string::npos) && (param_pos_end != std::string::npos))
+		{
+			auto param_start_request = request._endpoint.find_last_of('/');
+			if (request._endpoint.size() > request._endpoint.size() - param_pos_start)
+			{
+				request._param_value = request._endpoint.substr(param_start_request + 1);
+				request._endpoint = endpoint_exists->_endpoint;				
+			}
+			else
+			{
+				request._param_value = "";
+			}
+
+		}
+	}
+
+	return found;
 }
 
 void server_t::run_queue()

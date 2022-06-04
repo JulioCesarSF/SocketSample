@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "request.h"
 
 namespace http_server
@@ -11,6 +12,12 @@ namespace http_server
 	class request_handler_i
 	{
 	public:
+
+		/// <summary>
+		/// Retrieve a list of all endpoint for a given controller
+		/// </summary>
+		/// <returns></returns>
+		virtual std::vector<request_item_t> get_endpoints() = 0;
 
 		/// <summary>
 		/// Controller name

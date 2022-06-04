@@ -1,3 +1,8 @@
+// Microsoft Visual C++ generated resource script.
+//
 #include "resource.h"
 
-IDR_HTML1 HTML "html1.html"
+
+IDR_HTML1               HTML                    "html1.html"
+IDR_JAVASCRIPT1			RCDATA					"test.js"
+

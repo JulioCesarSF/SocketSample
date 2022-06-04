@@ -55,6 +55,30 @@ std::string default_controller_t::handle_request(const std::string& payload)
 	return task.get();
 }
 
+std::vector<request_item_t> http_server::default_controller_t::get_endpoints()
+{
+	std::vector<request_item_t> endpoints;
+	endpoints.reserve(end_points_get.size() + end_points_post.size());
+
+	for (const auto& endpoint : end_points_get)
+	{
+		request_item_t item;
+		item._endpoint = endpoint.first;
+		item._http_method = http_method_e::GET;
+		endpoints.push_back(item);
+	}
+
+	for (const auto& endpoint : end_points_post)
+	{
+		request_item_t item;
+		item._endpoint = endpoint.first;
+		item._http_method = http_method_e::POST;
+		endpoints.push_back(item);
+	}
+
+	return endpoints;
+}
+
 std::string http_server::default_controller_t::handle_request(const request_t& request)
 {
 	auto task = std::async(

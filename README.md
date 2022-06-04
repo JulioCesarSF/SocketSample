@@ -21,6 +21,20 @@ Socket HTTP server
 		{
 			return ok("Hello");
 		});
+
+	controller.add_get("/html",
+		[&](request_t request) -> std::string
+		{
+			return ok(hello_world_page, "text/html; charset=utf-8");
+		});
+
+	controller.add_get("/resource/{file}",
+		[&](request_t request) -> std::string
+		{
+			if (request._param_value == "test.js")
+				return ok(test_js, "application/javascript; charset=utf-8");
+			return not_found();
+		});
 ```
 
 # Post
@@ -55,26 +69,32 @@ server.run_queue();
 * You can create your own Controller, implement this class
 * File to include: request_handler.h
 ```c++
-/// <summary>
-/// Abstract class to create a controller
-/// </summary>
-class request_handler_i
-{
-public:
-
 	/// <summary>
-	/// Controller name
+	/// Abstract class to create a controller
 	/// </summary>
-	/// <returns></returns>
-	virtual const char* controller_name() = 0;
+	class request_handler_i
+	{
+	public:
 
-	/// <summary>
-	/// Process a given payload
-	/// </summary>
-	/// <param name="payload">Incoming request</param>
-	/// <returns>http response as string</returns>
-	virtual std::string handle_request(const request_t& request) = 0;
-};
+		/// <summary>
+		/// Retrieve a list of all endpoint for a given controller
+		/// </summary>
+		/// <returns></returns>
+		virtual std::vector<request_item_t> get_endpoints() = 0;
+
+		/// <summary>
+		/// Controller name
+		/// </summary>
+		/// <returns></returns>
+		virtual const char* controller_name() = 0;
+
+		/// <summary>
+		/// Process a given payload
+		/// </summary>
+		/// <param name="payload">Incoming request</param>
+		/// <returns>http response as string</returns>
+		virtual std::string handle_request(const request_t& request) = 0;
+	};
 ```
 # Server log callback
 * To add a log callback call set_log_callback function
