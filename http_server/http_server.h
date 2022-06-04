@@ -56,7 +56,7 @@ namespace http_server
 		unsigned long size() const
 		{
 			std::lock_guard<std::mutex> lock(mutex_);
-			return _socket_queue.size();
+			return static_cast<unsigned long>(_socket_queue.size());
 		}
 
 		std::optional<n_socket_client_t> pop()
@@ -74,14 +74,7 @@ namespace http_server
 		void push(const n_socket_client_t& item)
 		{
 			std::lock_guard<std::mutex> lock(mutex_);
-			_socket_queue.push_back(item);
-			/*auto already_queue = std::find_if(_socket_queue.begin(), _socket_queue.end(),
-				[&](n_socket_client_t ss)
-				{
-					return ss.socket == item.socket;
-				});*/
-			/*if (already_queue == _socket_queue.end())
-				_socket_queue.push_back(item);		*/	
+			_socket_queue.push_back(item);			
 		}
 	};
 
@@ -190,6 +183,6 @@ namespace http_server
 		/// <summary>
 		/// Multiclient and multirequest server
 		/// </summary>
-		void run_queue();
+		void run_queue(bool run_on_thread = false);
 	};
 }

@@ -139,12 +139,24 @@ int main()
 			return ok();
 		});
 
-	server_t server("127.0.0.1", 1248, controller);
+	server_t server("127.0.0.1", 80, controller);
 	server.set_log_callback(
 		[](std::string msg) {
 			std::cout << "\r" << msg;
 		});
-	server.run_queue();
+	server.run_queue(true);
+
+	bool exit = false;
+	while (!exit)
+	{
+		if (GetAsyncKeyState(VK_F2) & 0x8000)
+		{
+			server.shutdown_server = true;
+			exit = true;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
 
 	return 0;
 }

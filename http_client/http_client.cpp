@@ -55,7 +55,7 @@ bool request_sender_t::create_connection(const std::string& host, int port)
 		return false;
 	}
 
-	const auto connected = connect(_socket, addr_info_ress->ai_addr, addr_info_ress->ai_addrlen);
+	const auto connected = connect(_socket, addr_info_ress->ai_addr, static_cast<int>(addr_info_ress->ai_addrlen));
 	if (connected != 0)
 	{
 		const int error_code = WSAGetLastError();
@@ -97,12 +97,12 @@ response_t request_sender_t::send_request(request_t& request)
 	const char* request_content = request._final_request.c_str();
 
 	//send
-	int totalToSend = strlen(request_content);
+	size_t totalToSend = strlen(request_content);
 	int sent = 0;
 	int offset = 0;
 	do
 	{
-		int bytesSent = send(_socket, request_content, totalToSend, 0);
+		int bytesSent = send(_socket, request_content, static_cast<int>(totalToSend), 0);
 		if (bytesSent <= 0) break;
 		sent += bytesSent;
 		totalToSend -= bytesSent;
