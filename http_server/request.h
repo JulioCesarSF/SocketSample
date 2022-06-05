@@ -25,7 +25,7 @@ namespace http_server
 		std::string _payload; //request full text
 
 		response_t _response;
-
+		request_t() = default;
 		request_t(std::string payload);
 	};
 

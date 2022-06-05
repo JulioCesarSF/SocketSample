@@ -15,9 +15,12 @@
 #include <chrono>
 #include <queue>
 #include <optional>
+#include <bitset>
 
 #include "request_handler.h"
 #include "benchmark.h"
+
+#include "openssl/sha.h"
 
 namespace http_server
 {
@@ -73,7 +76,7 @@ namespace http_server
 		void push(const n_socket_client_t& item)
 		{
 			std::lock_guard<std::mutex> lock(mutex_);
-			_socket_queue.push_back(item);			
+			_socket_queue.push_back(item);
 		}
 	};
 
@@ -149,8 +152,11 @@ namespace http_server
 		std::thread socket_consumer;
 		std::mutex server_mutex;
 		std::mutex consumer_lock;
-		request_handler_i& _controller;		
+		request_handler_i& _controller;
 		fd_set queue_set;
+
+		//websocket clients
+		std::vector<n_socket_client_t> websocket_clients;
 
 		std::vector<request_item_t> server_endpoints;
 		bool is_endpoint_available(request_t& request);
@@ -183,5 +189,16 @@ namespace http_server
 		/// Multiclient and multirequest server
 		/// </summary>
 		void run_queue(bool run_on_thread = false);
+
+		/// <summary>
+		/// Send a given text to all websocket clients (websocket)
+		/// </summary>
+		/// <param name="message">Message to send</param>
+		void send_message_to_all_client(std::string message);
+
+		/// <summary>
+		/// Read all incomming values from connected sockets (websocket)
+		/// </summary>
+		void receive_messages_from_all_clients();
 	};
 }

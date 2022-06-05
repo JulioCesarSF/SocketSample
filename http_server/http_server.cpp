@@ -86,6 +86,12 @@ void server_t::clear()
 		closesocket(client.value().socket);
 	}
 
+	for (const auto& websocket_client : websocket_clients)
+	{
+		if (websocket_client.socket != INVALID_SOCKET)
+			::closesocket(websocket_client.socket);
+	}
+
 	if (_server_socket != INVALID_SOCKET)
 		::closesocket(_server_socket);
 	//https://docs.microsoft.com/pt-br/windows/win32/api/winsock/nf-winsock-wsacleanup
@@ -245,10 +251,10 @@ void server_t::consume_queue()
 {
 	auto socket = socket_queue.pop();
 	if (!socket.has_value()) return;
-	auto client = socket.value();
+	n_socket_client_t client = socket.value();
 
 	benchmark_t benchmark;
-
+	request_t request;
 	recv_struct_t rcv_struct = recv_all(client.socket);
 	if (rcv_struct.process_response)
 	{
@@ -259,19 +265,29 @@ void server_t::consume_queue()
 		}
 		else
 		{
-			request_t request(rcv_struct.request);
+			request = request_t(rcv_struct.request);
+			//request_t request();
 			s_response = is_endpoint_available(request) ?
 				_controller.handle_request(request) :
 				bad_request();
 		}
-		send_all(static_cast<int>(client.socket), s_response.c_str()); //send response					
+		if (request._headers["Connection"] != "Upgrade")
+		{
+			send_all(static_cast<int>(client.socket), s_response.c_str()); //send response
+			::closesocket(client.socket); //shutdown client socket
+		}
+		else
+		{
+			// do something?
+			send_all(static_cast<int>(client.socket), s_response.c_str()); //send response
+			websocket_clients.push_back(client);
+		}
 	}
-	::closesocket(client.socket); //shutdown client socket
 
 	clients_consumed++;
 	time_per_client += benchmark.elapsed() + client.time_to_accept;
 	auto avrg = time_per_client / clients_consumed;
-	log_text("Clients consumed: " + std::to_string(clients_consumed) + ", avg per request (accept/recv/send/closesocket): " + std::to_string(avrg));
+	//log_text("Clients consumed: " + std::to_string(clients_consumed) + ", avg per request (accept/recv/send/closesocket): " + std::to_string(avrg));
 	return;
 }
 
@@ -283,7 +299,7 @@ bool http_server::server_t::is_endpoint_available(request_t& request)
 			const auto contains_param = item._endpoint.find("{");
 
 			if ((request._endpoint.size() == item._endpoint.size()) || (contains_param == std::string::npos))
-				return request._http_method == item._http_method && request._endpoint == item._endpoint;			
+				return request._http_method == item._http_method && request._endpoint == item._endpoint;
 
 			std::string copy_end_point = item._endpoint.substr(0, item._endpoint.find_last_of("/"));
 			return request._http_method == item._http_method && contains_param && (request._endpoint.find(copy_end_point) != std::string::npos);
@@ -366,3 +382,64 @@ void server_t::run_queue(bool run_on_thread)
 	}
 
 }
+
+//TODO: NEED TO FORMAT TO DATA-FRAME
+void http_server::server_t::send_message_to_all_client(std::string message)
+{
+	if (message.empty()) return;
+
+	for (const auto& client : websocket_clients)
+	{
+		send_all(static_cast<int>(client.socket), message.c_str());
+	}
+}
+
+void http_server::server_t::receive_messages_from_all_clients()
+{
+	for (const auto& client : websocket_clients)
+	{
+		auto received = recv_all(client.socket);
+
+		/// <summary>
+		/// Process Websocket data-frame from a client
+		/// </summary>
+		if (received.process_response)
+		{
+			std::vector<char> data_frame(received.request.begin(), received.request.end());
+			int frame_key = 2;
+
+			bool is_text_message = (received.request[0] >> 8) & 1;
+			if (!is_text_message) continue;
+
+			bool is_masked = (received.request[1] >> 8) & 1;
+			if (!is_masked)
+			{
+				::closesocket(client.socket);
+				continue;
+			}
+
+			auto payload_size = received.request[1] & 0x7F; // "test = 4"
+			if (payload_size <= 0) continue;
+			if (payload_size == 126) frame_key = 4;
+			if (payload_size == 127) frame_key = 10;
+
+			std::vector<char> k(data_frame.begin() + frame_key, (data_frame.begin() + frame_key) + 4);
+			auto index = frame_key + 4; //after key
+
+			auto total_size = data_frame.size() - index;
+			if (total_size > data_frame.size()) continue;
+
+			std::vector<byte> bytes;
+			int c = 0;
+			for (int i = index; i < data_frame.size(); i++)
+			{
+				bytes.push_back((received.request[i] ^ k[c % 4]));
+				c++;
+			}
+
+			std::string s_payload(bytes.begin(), bytes.end());
+			std::cout << "received from websocket client: " << s_payload << std::endl;
+		}
+	}
+}
+

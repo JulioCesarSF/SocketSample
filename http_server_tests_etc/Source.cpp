@@ -36,6 +36,22 @@ int main()
 			return not_found();
 		});
 
+	controller.add_get("/websocket",
+		[&](request_t request) -> std::string
+		{
+			/*
+			* Calculate Sec-WebSocket-Accept 
+			* https://www.rfc-editor.org/rfc/rfc6455#page-24
+			*/
+			auto new_raw_hash = request._headers["Sec-WebSocket-Key"] + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+			auto c_new_raw_hash = (const unsigned char*)new_raw_hash.c_str();			
+			auto created = SHA1(c_new_raw_hash, new_raw_hash.size(), NULL);
+			std::string server_key = http_server::base64_encode(
+				reinterpret_cast<const unsigned char*>(created), strlen((char*)created));
+			request._response._headers["Sec-WebSocket-Accept"] = server_key;
+			return switching_protocols(request._response._headers);
+		});
+
 	controller.add_post("/join",
 		[](request_t request) -> std::string
 		{
@@ -61,6 +77,8 @@ int main()
 	server.run_queue(true);
 
 	bool exit = false;
+
+	static auto now = GetTickCount64();
 	while (!exit)
 	{
 		if (GetAsyncKeyState(VK_F2) & 0x8000)
@@ -68,7 +86,14 @@ int main()
 			server.shutdown_server = true;
 			exit = true;
 		}
-
+		auto after = GetTickCount64();
+		auto dif = after - now;
+		if (dif > 100)
+		{
+			//server.send_message_to_all_client("Hello World websocket");
+			server.receive_messages_from_all_clients();
+			now = after;
+		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 

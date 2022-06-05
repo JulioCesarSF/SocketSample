@@ -3,6 +3,7 @@ using namespace http_server;
 
 status_code_t::status_code_t()
 {
+	this->operator[]("101") = SWITCHING_PROTOCOLS;
 	this->operator[]("200") = OK;
 	this->operator[]("400") = BAD_REQUEST;
 	this->operator[]("404") = NOT_FOUND;
@@ -16,6 +17,7 @@ status_code_t::~status_code_t()
 
 status_code_string_t::status_code_string_t()
 {
+	this->operator[](SWITCHING_PROTOCOLS) = "Switching Protocols";
 	this->operator[](OK) = "OK";
 	this->operator[](BAD_REQUEST) = "Bad Request";
 	this->operator[](NOT_FOUND) = "Not Found";

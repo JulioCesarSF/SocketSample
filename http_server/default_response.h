@@ -41,4 +41,10 @@ namespace http_server
 	/// </summary>
 	/// <returns></returns>
 	response_t internal_server_error();
+
+	/// <summary>
+	/// Response for status code 101
+	/// </summary>
+	/// <returns></returns>
+	response_t switching_protocols(std::map<std::string, std::string> additiona_headers);
 }

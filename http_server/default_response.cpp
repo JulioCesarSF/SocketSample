@@ -108,3 +108,28 @@ response_t http_server::internal_server_error()
 	response._headers["Date"] = s_date_time;
 	return response;
 }
+
+response_t http_server::switching_protocols(std::map<std::string, std::string> additiona_headers)
+{
+	response_t response;
+	response._status_code = SWITCHING_PROTOCOLS;
+	//response._headers["Content-Type"] = "text/plain";
+	//std::string body = status_code_string_t()[response._status_code];
+	//response._headers["Content-Length"] = std::to_string(body.size());
+	//response.add_body_text(body);
+	response._headers["Upgrade"] = "websocket";
+	response._headers["Access-Control-Allow-Origin"] = "*";
+	response._headers["Connection"] = "Upgrade";
+	response._headers["Cache-control"] = "no-cache";
+
+	for (const auto& header : additiona_headers)
+		response._headers.emplace(header);
+
+	auto date_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char c_date_time[256] = {};
+	auto now = ctime_s(c_date_time, sizeof(c_date_time), &date_time);
+	std::string s_date_time(c_date_time);
+	s_date_time.replace(s_date_time.find('\n'), 1, "");
+	response._headers["Date"] = s_date_time;
+	return response;
+}

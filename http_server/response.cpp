@@ -25,6 +25,8 @@ std::string response_t::to_string()
 
 	if (!_body.empty())
 		ss << "\r\n" << bodyBuffer << "\r\n";
+	else
+		ss << "\r\n";
 
 	finalResponse.append(ss.str());
 	return finalResponse;

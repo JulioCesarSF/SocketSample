@@ -93,9 +93,13 @@ request_t::request_t(std::string payload)
 				std::string key = delimiter;
 				if (key.find('\n') != std::string::npos)
 					key.erase(key.find('\n'), 1);
+				
 				delimiter = strtok_s(nullptr, ":", &nextDelimiter);
 				delimiter = delimiter == nullptr ? (char*)"\0" : delimiter;
-				_headers.emplace(std::pair< std::string, std::string>(key, delimiter));
+				std::string s_value(delimiter);
+				if (s_value[0] == ' ')
+					s_value.erase(0, 1);
+				_headers.emplace(std::pair< std::string, std::string>(key, s_value));
 			}
 			//body
 			else if (headersParsed)
