@@ -3,6 +3,6 @@
 #include "resource.h"
 
 
-IDR_HTML1               HTML                    "html1.html"
-IDR_JAVASCRIPT1			RCDATA					"test.js"
+IDR_HTML1               HTML                    "resources/views/index.html"
+IDR_JAVASCRIPT1			RCDATA					"resources/js/test.js"
 

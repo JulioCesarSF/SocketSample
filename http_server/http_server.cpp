@@ -280,12 +280,10 @@ bool http_server::server_t::is_endpoint_available(request_t& request)
 	auto endpoint_exists = std::find_if(server_endpoints.begin(), server_endpoints.end(),
 		[&](const request_item_t& item)
 		{
-			if (request._endpoint.size() == item._endpoint.size())
-				return request._http_method == item._http_method && request._endpoint == item._endpoint;
-
 			const auto contains_param = item._endpoint.find("{");
-			if (contains_param == std::string::npos)
-				return request._http_method == item._http_method && request._endpoint == item._endpoint; // :<
+
+			if ((request._endpoint.size() == item._endpoint.size()) || (contains_param == std::string::npos))
+				return request._http_method == item._http_method && request._endpoint == item._endpoint;			
 
 			std::string copy_end_point = item._endpoint.substr(0, item._endpoint.find_last_of("/"));
 			return request._http_method == item._http_method && contains_param && (request._endpoint.find(copy_end_point) != std::string::npos);

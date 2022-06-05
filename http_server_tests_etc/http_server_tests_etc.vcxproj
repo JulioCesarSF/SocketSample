@@ -148,20 +148,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="resource_manager.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource_manager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="http_server_tests_etc.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="html1.html">
-      <DeploymentContent>true</DeploymentContent>
-    </None>
     <None Include="javascri.bin" />
-    <None Include="test.js" />
+    <None Include="resources\js\test.js" />
+    <None Include="resources\views\index.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

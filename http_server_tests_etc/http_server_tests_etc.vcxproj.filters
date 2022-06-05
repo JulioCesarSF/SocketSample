@@ -2,16 +2,43 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="resource_manager.cpp">
+      <Filter>resource_manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource_manager.h">
+      <Filter>resource_manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="http_server_tests_etc.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="html1.html" />
     <None Include="javascri.bin" />
-    <None Include="test.js" />
+    <None Include="resources\views\index.html">
+      <Filter>resources\views</Filter>
+    </None>
+    <None Include="resources\js\test.js">
+      <Filter>resources\js</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="resource_manager">
+      <UniqueIdentifier>{c5f04d8c-3649-4b03-9b41-1596e35fc658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
+      <UniqueIdentifier>{54259870-833d-41fb-93f2-de2c25df2ca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\js">
+      <UniqueIdentifier>{dc5a6ed6-63ba-4625-839f-53e05ec9da28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\views">
+      <UniqueIdentifier>{174327cd-b2e2-4fb5-809a-8474acdff5e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\css">
+      <UniqueIdentifier>{a5261279-1a8a-43f6-9622-8eefd3b71c48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
