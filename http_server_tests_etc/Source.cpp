@@ -36,6 +36,7 @@ int main()
 			return not_found();
 		});
 
+#ifdef _WEBSOCKET
 	controller.add_get("/websocket",
 		[&](request_t request) -> std::string
 		{
@@ -51,7 +52,7 @@ int main()
 			request._response._headers["Sec-WebSocket-Accept"] = server_key;
 			return switching_protocols(request._response._headers);
 		});
-
+#endif
 	controller.add_post("/join",
 		[](request_t request) -> std::string
 		{

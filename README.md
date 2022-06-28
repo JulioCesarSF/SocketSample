@@ -12,6 +12,11 @@ Socket HTTP server
 * Build project: http_client_test and http_server_tests_etc
 * Server sample contains a log with the number of requests handled and display an average value time to handle requests
 
+# VcPgk (OpenSSL) for websocket implementation
+* Follow the instruction here: https://vcpkg.io/en/getting-started.html
+* Install OpenSSL Package: .\vcpkg install openssl and .\vcpkg install openssl:x64-windows
+* Now add this preprocessor: _WEBSOCKET , if you want to build with websocket support
+
 # Get
 ```c++
 	default_controller_t controller;
