@@ -20,7 +20,9 @@
 #include "request_handler.h"
 #include "benchmark.h"
 
+#ifdef _WEBSOCKET
 #include "openssl/sha.h"
+#endif
 
 namespace http_server
 {
