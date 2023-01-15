@@ -26,6 +26,9 @@
     <ClInclude Include="benchmark.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="python_utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="http_server.cpp" />

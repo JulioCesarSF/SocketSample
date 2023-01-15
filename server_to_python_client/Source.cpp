@@ -4,10 +4,13 @@
 #include "../http_server/default_controller.h"
 #include "../http_server/default_response.h"
 #include "../http_server/http_utils.h"
-#include "../http_server/python_utils.h"
 
 #include "resource.h"
 #include "resource_manager.h"
+
+#define TO_PYTHON_GET(python_function, endpoint, callback) controller.add_get(endpoint, callback)
+#define TO_PYTHON_POST(python_function, endpoint, callback) controller.add_post(endpoint, callback)
+#define HOST_CONFIG(ip, port)
 
 using namespace http_server;
 
@@ -31,20 +34,13 @@ int main()
 			return ok(rm.pre_loaded_resources[IDR_HTML1], "text/html; charset=utf-8");
 		});
 
-	TO_PYTHON_GET("python_function_name", "/endpoint_to_map",
-		[&](request_t request) -> std::string
-		{
-			return ok("OK");
-		});
-
 	TO_PYTHON_POST("dummy_post", "/dummy", 
 		[](request_t request) -> std::string
 		{
-			std::string user_name;
 			if (request._headers["Content-Type"].find("json") != std::string::npos)
 			{
 				json request_json = json::parse(request._body);
-				user_name = request_json.value("username", "");
+				auto user_name = request_json.value("username", "");
 				if (user_name.empty()) return not_found("username missing");
 			}
 			else
@@ -52,7 +48,7 @@ int main()
 				return not_found("username missing");
 			}
 
-			return ok("Username received:" + user_name);
+			return ok();
 		});
 
 	/*controller.add_get("/",
@@ -89,11 +85,10 @@ int main()
 	controller.add_post("/join",
 		[](request_t request) -> std::string
 		{
-			std::string user_name;
 			if (request._headers["Content-Type"].find("json") != std::string::npos)
 			{
 				json request_json = json::parse(request._body);
-				user_name = request_json.value("username", "");
+				auto user_name = request_json.value("username", "");
 				if (user_name.empty()) return not_found("username missing");
 			}
 			else

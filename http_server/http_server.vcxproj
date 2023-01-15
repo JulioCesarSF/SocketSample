@@ -153,6 +153,7 @@
     <ClInclude Include="http_server.h" />
     <ClInclude Include="http_utils.h" />
     <ClInclude Include="json.h" />
+    <ClInclude Include="python_utils.h" />
     <ClInclude Include="request.h" />
     <ClInclude Include="request_handler.h" />
     <ClInclude Include="response.h" />

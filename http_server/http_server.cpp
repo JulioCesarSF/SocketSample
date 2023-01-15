@@ -287,7 +287,7 @@ void server_t::consume_queue()
 	clients_consumed++;
 	time_per_client += benchmark.elapsed() + client.time_to_accept;
 	auto avrg = time_per_client / clients_consumed;
-	//log_text("Clients consumed: " + std::to_string(clients_consumed) + ", avg per request (accept/recv/send/closesocket): " + std::to_string(avrg));
+	log_text("Clients consumed: " + std::to_string(clients_consumed) + ", avg per request (accept/recv/send/closesocket): " + std::to_string(avrg));
 	return;
 }
 
@@ -334,7 +334,7 @@ void server_t::run_queue(bool run_on_thread)
 {
 	assert(initialized == true);
 	assert(_server_socket != INVALID_SOCKET);
-
+	log_text("Server running");
 	if (!run_on_thread)
 	{
 		while (!shutdown_server)

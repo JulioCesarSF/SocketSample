@@ -83,6 +83,17 @@ namespace http_server
 	};
 
 	/// <summary>
+	/// This should output a python http client from mapped endpoints
+	/// </summary>
+	class python_client_creator
+	{
+	private:
+
+	public:
+
+	};
+
+	/// <summary>
 	/// Socket server (TCP) listener
 	/// </summary>
 	class server_t
